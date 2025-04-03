@@ -6,11 +6,11 @@ const MenuItem = require("./MenuItem");
 
 const orderSchema = new mongoose.Schema(
   {
-    user: { type: mongoose.Schema.Types.ObjectId, ref: User, required: true }, // Customer
-    restaurant: { type: mongoose.Schema.Types.ObjectId, ref: Restaurant, required: true },
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true }, // Customer
+    restaurantId: { type: mongoose.Schema.Types.ObjectId, ref: "Restaurant", required: true },
     items: [
       {
-        menuItem: { type: mongoose.Schema.Types.ObjectId, ref: MenuItem, required: true },
+        menuItem: { type: mongoose.Schema.Types.ObjectId, ref: "MenuItem", required: true },
         quantity: { type: Number, required: true, min: 1 },
       },
     ],
@@ -23,5 +23,10 @@ const orderSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+orderSchema.index({ userId: 1, status: 1 }); 
+orderSchema.index({ restaurantId: 1, status: 1 });
+orderSchema.index({ restaurantId: 1 });
+orderSchema.index({ status: 1 });
 
 module.exports = mongoose.model("Order", orderSchema);

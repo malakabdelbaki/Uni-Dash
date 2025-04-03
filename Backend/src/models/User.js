@@ -5,7 +5,14 @@ const CustomerType = require("../enums/customer");
 const userSchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
-    email: { type: String, required: true, unique: true },
+    email: { 
+      type: String, 
+      required: true, 
+      unique: true,
+      lowercase: true,
+      trim: true,
+      match: [/^\S+@\S+\.\S+$/, "Please fill a valid email address"],
+    },
     password: { type: String, required: true },
     role: { type: String, enum: CustomerType, default: CustomerType.STUDENT },
     phone: { type: String },
