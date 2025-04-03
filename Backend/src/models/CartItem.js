@@ -4,11 +4,13 @@ const MenuItem = require("./MenuItem");
 
 const cartItemSchema = new mongoose.Schema(
   {
-    cart: { type: mongoose.Schema.Types.ObjectId, ref: Cart, required: true },
-    menuItem: { type: mongoose.Schema.Types.ObjectId, ref: MenuItem, required: true },
+    cartId: { type: mongoose.Schema.Types.ObjectId, ref: "Cart", required: true },
+    menuItemId: { type: mongoose.Schema.Types.ObjectId, ref: "MenuItem", required: true },
     quantity: { type: Number, required: true, min: 1 },
   },
   { timestamps: true }
 );
+
+cartItemSchema.index({ cartId: 1, menuItemId: 1 }); 
 
 module.exports = mongoose.model("CartItem", cartItemSchema);
