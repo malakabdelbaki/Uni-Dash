@@ -8,5 +8,4 @@ const SignupPage = () => {
     </AuthLayout>
   );
 };
-
 export default SignupPage;
