@@ -1,12 +1,99 @@
 import styled from 'styled-components';
+import { createGlobalStyle } from 'styled-components';
 
-export const FormContainer = styled.div`
+export const GlobalStyle = createGlobalStyle`
+  /* Modern CSS Reset */
+  *, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  html, body {
+    height: 100%;
+    font-size: 16px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  img, picture, video, canvas, svg {
+    display: block;
+    max-width: 100%;
+  }
+
+  input, button, textarea, select {
+    font: inherit;
+  }
+
+  button {
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  ol, ul {
+    list-style: none;
+  }
+
+  /* Remove form control defaults */
+  input, textarea, select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    border-radius: 0;
+  }
+
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  /* Remove animations */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+
+  /* Base styles */
+  body {
+    font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+                 Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    background-color: #f5f5f5;
+  }
+
+  /* Font face for Nunito - if you're using it */
+  @font-face {
+    font-family: 'Nunito';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Nunito Regular'), local('Nunito-Regular'),
+         url('https://fonts.gstatic.com/s/nunito/v16/XRXV3I6Li01BKofINeaE.ttf') format('truetype');
+  }
+`;
+
+
+// ... rest of your styled components remain the same
+export const Container = styled.div`
+  display: flex;
+  min-height: 100vh;
+`;
+
+export const FormSection = styled.div`
+  flex: 1;
   max-width: 450px;
-  margin: 0 auto;
   padding: 2rem;
   background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  margin: 0 auto;
 `;
 
 export const LogoContainer = styled.div`
@@ -77,15 +164,13 @@ export const PasswordWrapper = styled.div`
   position: relative;
 `;
 
-export const EyeIcon = styled.span`
+export const EyeIconWrapper = styled.div`
   position: absolute;
   right: 1rem;
   top: 50%;
   transform: translateY(-50%);
   cursor: pointer;
-  width: 20px;
-  height: 20px;
-  background: url('eye-icon.svg') no-repeat center;
+  color: #545563;
 `;
 
 export const SubmitButton = styled.button`
@@ -140,4 +225,29 @@ export const ErrorMessage = styled.p`
   border-radius: 4px;
   margin-bottom: 1rem;
   text-align: center;
+`;
+
+export const InfoSection = styled.div`
+  display: none; // Hidden by default, can be enabled if needed
+
+  @media (min-width: 1024px) {
+    display: flex;
+    flex: 1;
+    background: #d79a27;
+    flex-direction: column;
+    justify-content: center;
+    padding: 2rem;
+    color: white;
+  }
+`;
+
+export const InfoTitle = styled.h2`
+  font-size: 1.75rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+`;
+
+export const InfoDescription = styled.p`
+  font-size: 1rem;
+  line-height: 1.5;
 `;
