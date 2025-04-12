@@ -1,5 +1,5 @@
 const express = require("express");
-const { registerUser, loginUser, logoutUser } = require("../controllers/userController");
+const { registerUser, loginUser, logoutUser, forgotPassword, resetPassword } = require("../controllers/userController");
 const protect = require("../middleware/authMiddleware");
 
 const router = express.Router();
@@ -7,6 +7,8 @@ const router = express.Router();
 router.post("/register", registerUser);
 router.post("/login", loginUser);
 router.post("/logout", logoutUser);
+router.post("/forgot-password", forgotPassword);
+router.post("/reset-password/:token", resetPassword);
 
 // Protected Route: to test the cookies
 router.get("/profile", protect, (req, res) => {
