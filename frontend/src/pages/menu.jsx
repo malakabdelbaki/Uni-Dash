@@ -10,7 +10,7 @@ const Menu = () => {
   useEffect(() => {
     const fetchMenu = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/api/restaurants/${restaurantId}/menu`);
+        const res = await axios.get(`http://localhost:5050/api/restaurants/${restaurantId}/menu`);
         setMenu(res.data);
       } catch (err) {
         console.error("Error fetching menu:", err);
@@ -19,7 +19,7 @@ const Menu = () => {
 
     const fetchRestaurantDetails = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/restaurants");
+        const res = await axios.get("http://localhost:5050/api/restaurants");
         const found = res.data.find((r) => r._id === restaurantId);
         setRestaurant(found);
       } catch (err) {
