@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // axiosInstance.js
 const axiosInstance = axios.create({
-  baseURL: process.env.REACT_APP_API_URL || 'http://localhost:5000/api', // Keep this
+  baseURL: process.env.REACT_APP_API_URL || 'http://localhost:5050/api', // Keep this
   withCredentials: true, // Only if using cookies
   headers: {
     'Content-Type': 'application/json',
