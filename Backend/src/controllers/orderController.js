@@ -1,28 +1,7 @@
 
 const Order = require("../models/Order");
 
-// exports.confirmOrder = async (req, res) => {
-//   try {
-//     const { orderId } = req.params;
-//     const { estimatedPrepTime } = req.body; // e.g. 20 (minutes)
 
-//     const order = await Order.findById(orderId);
-//     if (!order) return res.status(404).json({ message: "Order not found" });
-
-//     order.status = "CONFIRMED";
-//     order.confirmedAt = new Date();
-//     order.estimatedPrepTime = estimatedPrepTime;
-
-//     await order.save();
-
-//     res.status(200).json({ message: "Order confirmed", order });
-//   } catch (error) {
-//     console.error("Error confirming order:", error);
-//     res.status(500).json({ message: "Failed to confirm order", error });
-//   }
-// };
-
-// Get the countdown for a confirmed order
 exports.getOrderCountdown = async (req, res) => {
     try {
       const { orderId } = req.params;
