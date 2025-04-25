@@ -20,6 +20,8 @@ const orderSchema = new mongoose.Schema(
       enum: OrderStatus,
       default: OrderStatus.PENDING,
     }, 
+    confirmedAt: { type: Date }, // set when restaurant confirms order
+     estimatedPrepTime: { type: Number }, // in minutes
   },
   { timestamps: true }
 );
