@@ -60,6 +60,7 @@ module.exports = {
   updateOrderStatus,
 };
 
+
 exports.getOrderCountdown = async (req, res) => {
     try {
       const { orderId } = req.params;
@@ -82,6 +83,7 @@ exports.getOrderCountdown = async (req, res) => {
       res.status(500).json({ message: "Failed to get countdown", error });
     }
   };
+
 
 exports.placeOrder = async (req, res) => {
   try {
