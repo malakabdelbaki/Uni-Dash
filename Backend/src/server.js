@@ -14,7 +14,7 @@ const app = express();
 app.use(cors({
   origin: 'http://localhost:3000', // frontend URL
   credentials: true, // allow cookies
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE','PATCH'],
 }));
 
 // Middleware
@@ -22,8 +22,8 @@ app.use(express.json());
 app.use(cookieParser());
 app.use("/api/users", require("./routes/userRoutes"));
 app.use("/api/restaurants", require("./routes/restaurantRoutes"));
+app.use("/api/cart", require("./routes/cartRoutes"));
 app.use("/api/orders", require("./routes/orderRoutes"));
-
 const PORT = process.env.PORT || 5050;
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
