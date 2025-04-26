@@ -6,7 +6,6 @@ const Restaurant = require("../models/Restaurant");
 exports.getRestaurants = async (req, res) => {
   try {
     const restaurants = await Restaurant.find();
-    console.log("Fetched Restaurants from DB:", restaurants); // Debugging log
 
     if (restaurants.length === 0) {
       return res.status(404).json({ message: "No restaurants found" });
@@ -18,7 +17,6 @@ exports.getRestaurants = async (req, res) => {
     res.status(500).json({ message: "Failed to retrieve restaurants", error });
   }
 };
-
 
 
 const MenuItem = require("../models/MenuItem");

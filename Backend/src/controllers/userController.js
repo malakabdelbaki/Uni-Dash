@@ -40,9 +40,23 @@ const loginUser = async (req, res) => {
 
     const token = generateToken(user._id, user.role);
 
-    res.cookie("token", token, { httpOnly: true }).json({ message: "Login successful" });
+    // Create a plain object with the user data we want to send
+    const userResponse = {
+      id: user._id.toString(), // Convert ObjectId to string
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      phone: user.phone
+    };
+
+    res.cookie("token", token, { httpOnly: true }).json({
+      message: "Login successful",
+      token,
+      user: userResponse
+    });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error("Login error:", error); // Add error logging
+    res.status(500).json({ message: "An error occurred during login" });
   }
 };
 
