@@ -60,7 +60,7 @@ export default function Header() {
         <NavButton onClick={() => window.location.href = "/restaurants"}>
           Restaurants
         </NavButton>
-        <NavButton onClick={() => window.location.href = "/orders"}>
+        <NavButton onClick={() => window.location.href = "/myorders"}>
           My Orders
         </NavButton>
         <img src="/logo.png" alt="GIU Logo" width="200" height="40" />

@@ -11,7 +11,7 @@ export const LoginForm = () => {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const { setUser } = useAuth();
+  const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -20,10 +20,17 @@ export const LoginForm = () => {
     setError('');
 
     try {
-      const { token, user } = await loginUser({ email, password });
-      setUser({ token, ...user });
-      navigate('/restaurants');
+      const response = await loginUser({ email, password });
+      console.log('Login response in form:', response);
+      
+      if (response.token && response.user) {
+        login({ token: response.token, ...response.user });
+        navigate('/restaurants');
+      } else {
+        setError('Invalid response from server');
+      }
     } catch (err) {
+      console.error('Login error in form:', err);
       setError(err.message || 'Login failed. Please try again.');
     } finally {
       setIsLoading(false);
