@@ -1,5 +1,5 @@
 import OrdersTable from "../components/IncomingOrders/OrdersTable"
-import Header from "../components/IncomingOrders/Header"
+import Header from "../components/Header"
 import { OrdersProvider } from "../context/OrdersContext"
 import { useParams } from "react-router-dom";
 

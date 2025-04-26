@@ -51,7 +51,7 @@ export const SignupForm = () => {
     try {
       const { token, user } = await registerUser(formData);
       login({ token, ...user });
-      navigate('/dashboard');
+      navigate('/restaurants');
     } catch (err) {
       setError(err.message || 'Registration failed');
     } finally {
