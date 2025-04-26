@@ -25,9 +25,10 @@ const MenuItem = require("../models/MenuItem");
 
 exports.getMenuByRestaurant = async (req, res) => {
   try {
-    const { restaurantId } = String(req.params.restaurantId);
-    const menuItems = await MenuItem.find({ restaurant: restaurantId });
-
+    const { restaurantId } = req.params;
+    console.log("Restaurant ID:", restaurantId);
+    const menuItems = await MenuItem.find({ restaurantId: restaurantId });
+    
     if (!menuItems.length) {
       return res.status(404).json({ message: "No menu items found for this restaurant" });
     }
