@@ -6,9 +6,11 @@ import AuthProvider from './hooks/useAuth';
 import OrdersPage from './pages/ViewOrders';
 import Restaurant from './pages/Restaurant'; // <-- ✅ import Restaurant page
 import Menu from './pages/Menu';
-import Cart from "./pages/cart";
 
-<Route path="/cart" element={<Cart />} />
+import Cart from "./pages/cart"; // make sure the import path is correct
+
+// inside your <Routes>
+
 
 function App() {
   return (
@@ -22,6 +24,9 @@ function App() {
           <Route path="/restaurants" element={<Restaurant />} /> {/* <-- ✅ add this */}
           <Route path="/menu/:restaurantId" element={<Menu />} />
           <Route path="/cart" element={<Cart />} />
+
+<Route path="/cart" element={<Cart />} />
+
         </Routes>
       </Router>
     </AuthProvider>

@@ -1,13 +1,13 @@
 // src/pages/Menu.jsx
 
 import React, { useEffect, useState } from "react";
-import { useParams, useLocation, useNavigate } from "react-router-dom"; // <== updated here
+import { useParams, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const Menu = () => {
   const { restaurantId } = useParams();
   const location = useLocation();
-  const navigate = useNavigate(); // <== added here
+  const navigate = useNavigate();
   const { restaurantName, restaurantImage } = location.state || {};
   const [menuItems, setMenuItems] = useState([]);
   const [quantities, setQuantities] = useState({});
@@ -42,8 +42,24 @@ const Menu = () => {
   const handleAddToCart = (itemId) => {
     const item = menuItems.find(item => item._id === itemId);
     const quantity = quantities[itemId];
-    console.log(`Adding to cart:`, { item, quantity });
-    // Later: integrate with real cart system
+
+    if (item) {
+      // Get existing cart or create new one
+      const existingCart = JSON.parse(localStorage.getItem("cart")) || [];
+
+      const existingItemIndex = existingCart.findIndex(cartItem => cartItem._id === itemId);
+
+      if (existingItemIndex !== -1) {
+        existingCart[existingItemIndex].quantity += quantity;
+      } else {
+        existingCart.push({ ...item, quantity });
+      }
+
+      localStorage.setItem("cart", JSON.stringify(existingCart));
+
+      console.log("Cart Updated:", existingCart);
+      alert(`${item.name} added to cart!`);
+    }
   };
 
   return (
@@ -131,7 +147,7 @@ const Menu = () => {
             gap: 10px;
           }
           .quantity-button {
-            background-color: #f59e0b; /* Orange */
+            background-color: #f59e0b;
             color: white;
             border: none;
             border-radius: 50%;
@@ -146,7 +162,7 @@ const Menu = () => {
             transition: background-color 0.3s;
           }
           .quantity-button:hover {
-            background-color: #d97706; /* Darker orange */
+            background-color: #d97706;
           }
           .quantity-number {
             font-size: 16px;
@@ -231,7 +247,6 @@ const Menu = () => {
                     Add to Cart
                   </button>
                 </div>
-
               </div>
             </div>
           ))}
