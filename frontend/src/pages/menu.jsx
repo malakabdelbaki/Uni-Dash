@@ -252,11 +252,13 @@ const Menu = () => {
           ))}
         </div>
 
-        {/* Floating Cart Button */}
         <button
-          className="floating-cart-button"
-          onClick={() => navigate("/cart")}
-        >
+  className="floating-cart-button"
+  onClick={() => navigate("/cart", { state: { restaurantId } })}
+>
+
+
+
           Cart
         </button>
       </div>
@@ -265,3 +267,4 @@ const Menu = () => {
 };
 
 export default Menu;
+
