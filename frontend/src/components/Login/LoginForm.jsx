@@ -22,8 +22,8 @@ export const LoginForm = () => {
     try {
       const { token, user } = await loginUser({ email, password });
       setUser({ token, ...user });
-      navigate('/dashboard');
-    } catch (err) {
+      navigate('/restaurants');
+        } catch (err) {
       setError(err.message || 'Login failed. Please try again.');
     } finally {
       setIsLoading(false);

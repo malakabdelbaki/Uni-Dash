@@ -1,62 +1,251 @@
+// src/pages/Menu.jsx
+
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useLocation, useNavigate } from "react-router-dom"; // <== updated here
 import axios from "axios";
 
 const Menu = () => {
   const { restaurantId } = useParams();
-  const [menu, setMenu] = useState([]);
-  const [restaurant, setRestaurant] = useState(null);
+  const location = useLocation();
+  const navigate = useNavigate(); // <== added here
+  const { restaurantName, restaurantImage } = location.state || {};
+  const [menuItems, setMenuItems] = useState([]);
+  const [quantities, setQuantities] = useState({});
 
   useEffect(() => {
     const fetchMenu = async () => {
       try {
         const res = await axios.get(`http://localhost:5050/api/restaurants/${restaurantId}/menu`);
-        setMenu(res.data);
-      } catch (err) {
-        console.error("Error fetching menu:", err);
-      }
-    };
+        setMenuItems(res.data);
 
-    const fetchRestaurantDetails = async () => {
-      try {
-        const res = await axios.get("http://localhost:5050/api/restaurants");
-        const found = res.data.find((r) => r._id === restaurantId);
-        setRestaurant(found);
-      } catch (err) {
-        console.error("Error fetching restaurant:", err);
+        const initialQuantities = {};
+        res.data.forEach(item => {
+          initialQuantities[item._id] = 1;
+        });
+        setQuantities(initialQuantities);
+
+      } catch (error) {
+        console.error("Error fetching menu:", error);
       }
     };
 
     fetchMenu();
-    fetchRestaurantDetails();
   }, [restaurantId]);
 
+  const handleQuantityChange = (itemId, change) => {
+    setQuantities(prev => ({
+      ...prev,
+      [itemId]: Math.max(1, prev[itemId] + change),
+    }));
+  };
+
+  const handleAddToCart = (itemId) => {
+    const item = menuItems.find(item => item._id === itemId);
+    const quantity = quantities[itemId];
+    console.log(`Adding to cart:`, { item, quantity });
+    // Later: integrate with real cart system
+  };
+
   return (
-    <div className="p-6">
-      {restaurant && (
-        <div className="mb-6">
-          <img src={restaurant.image || "/placeholder.jpg"} alt={restaurant.name} className="h-40 w-40 object-cover rounded-full mx-auto" />
-          <h1 className="text-3xl font-semibold text-center mt-4">{restaurant.name}</h1>
+    <>
+      <style>
+        {`
+          .menu-container {
+            min-height: 100vh;
+            background-color: #f9fafb;
+            padding: 20px;
+            position: relative;
+          }
+          .header {
+            background-color: #fef3c7;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 30px;
+          }
+          .header img {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 12px;
+            margin-bottom: 10px;
+          }
+          .header h1 {
+            font-size: 28px;
+            font-weight: bold;
+            color: #333;
+          }
+          .menu-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+          }
+          .menu-item {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            display: flex;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+          }
+          .menu-item img {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+          }
+          .menu-details {
+            padding: 15px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+          }
+          .menu-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #111;
+          }
+          .menu-description {
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 10px;
+          }
+          .menu-bottom {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+          }
+          .price {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+          }
+          .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+          }
+          .quantity-button {
+            background-color: #f59e0b; /* Orange */
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s;
+          }
+          .quantity-button:hover {
+            background-color: #d97706; /* Darker orange */
+          }
+          .quantity-number {
+            font-size: 16px;
+            font-weight: bold;
+            width: 20px;
+            text-align: center;
+          }
+          .add-to-cart-button {
+            background-color: #d97706;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+          }
+          .add-to-cart-button:hover {
+            background-color: #b45309;
+          }
+          .floating-cart-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #f59e0b;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            transition: background-color 0.3s;
+            z-index: 1000;
+          }
+          .floating-cart-button:hover {
+            background-color: #d97706;
+          }
+        `}
+      </style>
+
+      <div className="menu-container">
+        <div className="header">
+          <img src={restaurantImage || "/placeholder.jpg"} alt="Restaurant Logo" />
+          <h1>{restaurantName || "Restaurant Menu"}</h1>
         </div>
-      )}
-      <h2 className="text-2xl font-semibold mb-4">Menu</h2>
-      <div className="space-y-4">
-        {menu.map((item) => (
-          <div key={item._id} className="border p-4 rounded-lg shadow flex items-center gap-4">
-            <img
-              src={item.image || "/placeholder_food.jpg"}
-              alt={item.name}
-              className="w-24 h-24 object-cover rounded"
-            />
-            <div className="flex-1">
-              <h3 className="text-lg font-bold">{item.name}</h3>
-              <p className="text-sm text-gray-600">{item.description}</p>
-              <p className="text-base font-semibold mt-1">{item.price} egp</p>
+
+        <div className="menu-list">
+          {menuItems.map((item) => (
+            <div className="menu-item" key={item._id}>
+              <img src={item.image || "/placeholder.jpg"} alt={item.name} />
+              <div className="menu-details">
+                <div>
+                  <div className="menu-title">{item.name}</div>
+                  <div className="menu-description">{item.description}</div>
+                </div>
+
+                <div className="menu-bottom">
+                  <div className="price">{item.price} EGP</div>
+
+                  <div className="quantity-controls">
+                    <button
+                      className="quantity-button"
+                      onClick={() => handleQuantityChange(item._id, -1)}
+                    >
+                      -
+                    </button>
+                    <div className="quantity-number">{quantities[item._id]}</div>
+                    <button
+                      className="quantity-button"
+                      onClick={() => handleQuantityChange(item._id, 1)}
+                    >
+                      +
+                    </button>
+                  </div>
+
+                  <button
+                    className="add-to-cart-button"
+                    onClick={() => handleAddToCart(item._id)}
+                  >
+                    Add to Cart
+                  </button>
+                </div>
+
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
+
+        {/* Floating Cart Button */}
+        <button
+          className="floating-cart-button"
+          onClick={() => navigate("/cart")}
+        >
+          Cart
+        </button>
       </div>
-    </div>
+    </>
   );
 };
 
