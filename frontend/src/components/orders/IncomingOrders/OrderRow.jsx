@@ -1,6 +1,6 @@
 import { useState } from "react";
 import styled from "styled-components";
-import { OrderStatus, updateOrderStatus } from "../../api/orderApi";
+import { OrderStatus, updateOrderStatus } from "../../../api/orderApi";
 
 const TableCell = styled.td`
   padding: 16px 20px;
@@ -35,7 +35,7 @@ const StatusButton = styled.button`
   &:hover {
     background-color: #f9fafb;
   }
-`
+`;
 
 const statusColors = {
   Pending: "#f59e0b", // Amber
@@ -43,8 +43,9 @@ const statusColors = {
   Preparing: "#8b5cf6", // Violet
   "Out for Delivery": "#10b981", // Emerald
   Cancelled: "#ef4444", // Red
-}
-export default function OrderRow({ order }) {
+};
+
+const OrderRow = ({ order }) => {
   const [editing, setEditing] = useState(false);
   const [status, setStatus] = useState(order.status);
 
@@ -94,4 +95,6 @@ export default function OrderRow({ order }) {
       <TableCell>{order.total.toFixed(2)} EGP</TableCell>
     </tr>
   );
-}
+};
+
+export default OrderRow; 

@@ -6,6 +6,7 @@ import AuthProvider from './hooks/useAuth'; // Use default export
 import OrdersPage from './pages/ViewOrders';
 import Restaurant from './pages/restraunt';
 import Menu from './pages/menu';
+import MyOrders from './pages/myOrders';
 function App() {
   return (
     <AuthProvider>
@@ -17,6 +18,7 @@ function App() {
           <Route path="/restaurants" element={<Restaurant />} />
           <Route path="/menu/:restaurantId" element={<Menu />} />
           <Route path="/orders/restaurant/:restaurantId" element={<OrdersPage />} />
+          <Route path="/myorders" element={<MyOrders />} />
         </Routes>
       </Router>
     </AuthProvider>

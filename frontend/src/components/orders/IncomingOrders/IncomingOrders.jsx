@@ -1,10 +1,8 @@
-
-"use client"
-
-import { useContext } from "react"
-import styled from "styled-components"
-import { OrdersContext } from "../../context/OrdersContext"
-import OrderRow from "./OrderRow"
+import { useContext } from "react";
+import styled from "styled-components";
+import { OrdersContext } from "../../../context/OrdersContext";
+import OrderRow from "./OrderRow";
+import "./style.css";
 
 const TableContainer = styled.div`
   width: 100%;
@@ -13,19 +11,19 @@ const TableContainer = styled.div`
   background-color: #ffffff;
   border-radius: 16px;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
-`
+`;
 
 const TableTitle = styled.h2`
   font-size: 22px;
   font-weight: 700;
   color: #1f2937;
   margin-bottom: 24px;
-`
+`;
 
 const Table = styled.table`
   width: 100%;
   border-collapse: collapse;
-`
+`;
 
 const TableHeader = styled.th`
   text-align: left;
@@ -36,13 +34,13 @@ const TableHeader = styled.th`
   background-color: #f9fafb;
   color: #6b7280;
   border-bottom: 2px solid #e5e7eb;
-`
+`;
 
-export default function OrdersTable() {
-  const { orders, loading, error } = useContext(OrdersContext)
+const IncomingOrders = () => {
+  const { orders, loading, error } = useContext(OrdersContext);
 
-  if (loading) return <div>Loading orders...</div>
-  if (error) return <div>Error loading orders: {error}</div>
+  if (loading) return <div className="loading">Loading orders...</div>;
+  if (error) return <div className="error-message">Error loading orders: {error}</div>;
 
   return (
     <TableContainer>
@@ -66,5 +64,7 @@ export default function OrdersTable() {
         </tbody>
       </Table>
     </TableContainer>
-  )
-}
+  );
+};
+
+export default IncomingOrders; 

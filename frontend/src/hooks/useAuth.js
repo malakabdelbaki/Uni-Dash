@@ -6,25 +6,37 @@ const AuthContext = createContext();
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
 
+  // Initialize user from localStorage on mount
   useEffect(() => {
     const token = localStorage.getItem('token');
-    if (token) {
-      // Verify token logic here
+    const userData = localStorage.getItem('user');
+    
+    console.log('Initializing auth state:', { token, userData });
+    
+    if (token && userData) {
+      try {
+        const parsedUser = JSON.parse(userData);
+        console.log('Setting user from localStorage:', parsedUser);
+        setUser(parsedUser);
+      } catch (error) {
+        console.error('Error parsing user data from localStorage:', error);
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+      }
     }
   }, []);
 
   const login = (userData) => {
+    console.log('Login called with:', userData);
     localStorage.setItem('token', userData.token);
-    setUser({
-      token: userData.token,
-      name: userData.name,
-      email: userData.email,
-      role: userData.role
-    });
+    localStorage.setItem('user', JSON.stringify(userData));
+    setUser(userData);
   };
   
   const logout = () => {
+    console.log('Logout called');
     localStorage.removeItem('token');
+    localStorage.removeItem('user');
     setUser(null);
   };
 
