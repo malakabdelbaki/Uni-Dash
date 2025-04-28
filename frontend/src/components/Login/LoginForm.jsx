@@ -13,19 +13,45 @@ export const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     setError('');
-
+  
     try {
       const response = await loginUser({ email, password });
       console.log('Login response in form:', response);
-      
+  
       if (response.token && response.user) {
         login({ token: response.token, ...response.user });
-        navigate('/restaurants');
+  //console.log(response.user.role)
+        if (response.user.role === 'restaurant_owner') {
+          // Fetch all restaurants
+          const restaurantsResponse = await fetch('http://localhost:5050/api/restaurants', {
+            headers: {
+              Authorization: `Bearer ${response.token}`,
+            },
+          });
+
+          if (!restaurantsResponse.ok) {
+            throw new Error('Failed to fetch restaurants');
+          }
+          const restaurants = await restaurantsResponse.json();
+          // Find the restaurant where ownerId matches logged-in user ID
+          // console.log("1 " +restaurant.ownerId)
+          //console.log("2 " +JSON.stringify(response.user))
+          const myRestaurant = restaurants.find(
+            (restaurant) => restaurant.ownerId === response.user.id
+          );
+  
+          if (myRestaurant) {
+            navigate(`/restaurants/${myRestaurant._id}`);
+          } else {
+            setError('No restaurant found for this user');
+          }
+        } else {
+          navigate('/restaurants');
+        }
       } else {
         setError('Invalid response from server');
       }
@@ -36,7 +62,7 @@ export const LoginForm = () => {
       setIsLoading(false);
     }
   };
-
+  
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };

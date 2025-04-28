@@ -1,4 +1,6 @@
 import styled from "styled-components"
+import { useNavigate, useParams } from "react-router-dom"
+import { useAuth } from "../hooks/useAuth" 
 
 export const LogoContainer = styled.div`
   display: flex;
@@ -50,6 +52,25 @@ const NavButton = styled.button`
 `
 
 export default function Header() {
+  const { user } = useAuth()
+  const { restaurantId } = useParams()
+  const navigate = useNavigate()
+console.log("id: " + restaurantId)
+  const handleRestaurantClick = () => {
+    if (user?.role === "restaurant_owner" && restaurantId) {
+      navigate(`/restaurants/${restaurantId}`)
+    } else {
+      navigate("/restaurants")
+    }
+  }
+  const handleSecondButtonClick = () => {
+    if (user?.role === "restaurant_owner" && restaurantId) {
+      navigate(`/orders/restaurant/${restaurantId}`)
+    } else {
+      navigate("/myorders")
+    }
+  }
+
   return (
     <HeaderContainer>
       <LogoContainer>
@@ -57,11 +78,11 @@ export default function Header() {
         <LogoDash>Dash</LogoDash>
       </LogoContainer>
       <HeaderRight>
-        <NavButton onClick={() => window.location.href = "/restaurants"}>
+        <NavButton onClick={handleRestaurantClick}>
           Restaurants
         </NavButton>
-        <NavButton onClick={() => window.location.href = "/myorders"}>
-          My Orders
+        <NavButton onClick={handleSecondButtonClick}>
+          {user?.role === "restaurant_owner" ? "Incoming Orders" : "My Orders"}
         </NavButton>
         <img src="/logo.png" alt="GIU Logo" width="200" height="40" />
       </HeaderRight>
