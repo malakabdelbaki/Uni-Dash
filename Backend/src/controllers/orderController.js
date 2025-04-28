@@ -130,12 +130,29 @@ const placeOrder = async (req, res) => {
   }
 };
 
+const getUserOrders = async (req, res) => {
+  try {
+
+    const userId = req.params.userId;
+    const orders = await Order.find({ userId });
+    if (orders.length > 0) {
+      return res.json(orders);
+    } else {
+      return res.status(404).json({ message: 'No orders found for this user.' });
+    }
+  } catch (error) {
+    console.error("Error fetching orders:", error);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
+
 module.exports = {
   createOrder,
   getIncomingOrders,
   updateOrderStatus,
   getOrderCountdown,
-  placeOrder
+  placeOrder,
+  getUserOrders
 };
 
 
