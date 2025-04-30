@@ -133,24 +133,4 @@ const getUserById = async (req, res) => {
   }
 };
 
-exports.verifyResetToken = async (req, res) => {
-  try {
-    const { token } = req.params;
-    
-    // Verify the token
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    
-    // Check if the token has expired
-    if (decoded.exp < Date.now() / 1000) {
-      return res.status(400).json({ message: "Token has expired" });
-    }
-
-    // Token is valid
-    res.status(200).json({ message: "Token is valid" });
-  } catch (error) {
-    console.error("Token verification error:", error);
-    res.status(400).json({ message: "Invalid or expired token" });
-  }
-};
-
-module.exports = { registerUser, loginUser, logoutUser, forgotPassword, resetPassword, getUserById, verifyResetToken };
+module.exports = { registerUser, loginUser, logoutUser, forgotPassword, resetPassword, getUserById };
