@@ -8,6 +8,7 @@ import Restaurant from './pages/restraunt';
 import Menu from './pages/menu';
 import MyOrders from './pages/myOrders';
 import ForgotPassword from './pages/forgot-password';
+import Cart from './pages/Cart';
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
           <Route path="/myorders" element={<MyOrders />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/forgot-password/:token" element={<ForgotPassword />} />
+          <Route path="/cart" element={<Cart />} />
         </Routes>
       </Router>
     </AuthProvider>
