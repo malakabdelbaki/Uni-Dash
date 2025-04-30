@@ -26,22 +26,24 @@ export default function ForgetPasswordForm({ token }) {
       }
 
       try {
-        // Try to reset password with empty password to verify token
+        // Try to verify token by making a POST request with a dummy password
         const res = await fetch(`http://localhost:5050/api/users/reset-password/${token}`, {
           method: "POST",
           headers: { 
             "Content-Type": "application/json",
             "Accept": "application/json"
           },
-          body: JSON.stringify({ password: "" })
+          body: JSON.stringify({ password: "dummy" })
         })
 
         const data = await res.json()
 
+        // If we get a 400 or 404, the token is invalid
         if (!res.ok) {
           throw new Error(data.message || "Invalid or expired token")
         }
 
+        // If we get here, the token is valid
         setTokenValid(true)
       } catch (error) {
         console.error("Token verification error:", error)
