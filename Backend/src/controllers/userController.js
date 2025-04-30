@@ -76,8 +76,8 @@ const forgotPassword = async (req, res) => {
     // Create a reset token
     const resetToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: "15m" });
 
-    // Add token to the URL
-    const resetUrl = `${process.env.BASE_URL}/api/users/reset-password/${resetToken}`;
+    // Add token to the URL - point to frontend route
+    const resetUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/forgot-password/${resetToken}`;
 
     const message = `
       <h2>Password Reset Request</h2>
@@ -116,7 +116,8 @@ const resetPassword = async (req, res) => {
     res.status(400).json({ message: "Invalid or expired token" });
   }
 };
- const getUserById = async (req, res) => {
+
+const getUserById = async (req, res) => {
   try {
     const userId = req.params.id;
 
@@ -131,4 +132,25 @@ const resetPassword = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
-module.exports = { registerUser, loginUser, logoutUser, forgotPassword, resetPassword, getUserById };
+
+exports.verifyResetToken = async (req, res) => {
+  try {
+    const { token } = req.params;
+    
+    // Verify the token
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    
+    // Check if the token has expired
+    if (decoded.exp < Date.now() / 1000) {
+      return res.status(400).json({ message: "Token has expired" });
+    }
+
+    // Token is valid
+    res.status(200).json({ message: "Token is valid" });
+  } catch (error) {
+    console.error("Token verification error:", error);
+    res.status(400).json({ message: "Invalid or expired token" });
+  }
+};
+
+module.exports = { registerUser, loginUser, logoutUser, forgotPassword, resetPassword, getUserById, verifyResetToken };
