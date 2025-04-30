@@ -12,7 +12,7 @@ const MyOrders = () => {
   const [error, setError] = useState(null);
   const [restaurantNames, setRestaurantNames] = useState({});
 
-  console.log("MyOrders component rendered, user:", user);
+
 
   // Format date to a more readable format
   const formatDate = (dateString) => {
@@ -68,6 +68,7 @@ const MyOrders = () => {
           setError(null);
         } catch (error) {
           console.error("Error fetching orders:", error);
+          if(error.response.status !== 404 && error.response.data?.message !== "No orders found for this user.")
           setError("Failed to fetch orders. Please try again later.");
         } finally {
           setLoading(false);
