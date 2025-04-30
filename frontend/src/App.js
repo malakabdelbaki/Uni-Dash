@@ -1,12 +1,14 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import LoginPage from './pages/Login';
-import SignupPage from './pages/Signup'; // Add this import
-import AuthProvider from './hooks/useAuth'; // Use default export
+import SignupPage from './pages/Signup';
+import AuthProvider from './hooks/useAuth';
 import OrdersPage from './pages/ViewOrders';
 import Restaurant from './pages/restraunt';
 import Menu from './pages/menu';
 import MyOrders from './pages/myOrders';
+import ForgotPassword from './pages/forgot-password';
+
 function App() {
   return (
     <AuthProvider>
@@ -19,6 +21,8 @@ function App() {
           <Route path="/menu/:restaurantId" element={<Menu />} />
           <Route path="/orders/restaurant/:restaurantId" element={<OrdersPage />} />
           <Route path="/myorders" element={<MyOrders />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/forgot-password/:token" element={<ForgotPassword />} />
         </Routes>
       </Router>
     </AuthProvider>
