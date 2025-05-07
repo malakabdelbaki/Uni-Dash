@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const User = require("../models/User");
+const Restaurant = require("../models/Restaurant")
 const sendEmail = require("../utils/sendEmail");
 
 // Generate Token
@@ -121,7 +122,7 @@ const getUserById = async (req, res) => {
   try {
     const userId = req.params.id;
 
-    const user = await User.findById(userId).lean(); // lean for a plain object
+    const user = await User.findById(userId).lean(); 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
@@ -133,4 +134,52 @@ const getUserById = async (req, res) => {
   }
 };
 
-module.exports = { registerUser, loginUser, logoutUser, forgotPassword, resetPassword, getUserById };
+const getRestaurantById = async (req, res) => {
+  try {
+    const restaurantId = req.params.id;
+
+    const restaurant = await Restaurant.findById(restaurantId).lean(); 
+    if (!restaurant) {
+      return res.status(404).json({ message: "Restaurant not found" });
+    }
+
+    res.status(200).json(restaurant);
+  } catch (error) {
+    console.error("Error fetching restaurant:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+const deleteUserById = async (req, res) => {
+  try {
+    const userId = req.params.id;
+
+    const deletedUser = await User.findByIdAndDelete(userId);
+    if (!deletedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json({ message: "User deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting user:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+const deleteRestaurantById = async (req, res) => {
+  try {
+    const restaurantId = req.params.id;
+
+    const deletedRestaurant = await Restaurant.findByIdAndDelete(restaurantId);
+    if (!deletedRestaurant) {
+      return res.status(404).json({ message: "Restaurant not found" });
+    }
+
+    res.status(200).json({ message: "Restaurant deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting restaurant:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+module.exports = { registerUser, loginUser, logoutUser, forgotPassword, resetPassword, getUserById, getRestaurantById, deleteUserById, deleteRestaurantById };
