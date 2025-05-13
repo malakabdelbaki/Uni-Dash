@@ -59,14 +59,14 @@ exports.createReview = async (req, res) => {
       return res.status(404).json({ message: "Restaurant not found" });
     }
     restaurant.reviews.push(review._id);
-    let averageRating = 1;
+    let averageRating = 0;
     for (let i = 0; i < restaurant.reviews.length; i++) {
       const review = await Review.findById(restaurant.reviews[i]);
       if (review) {
         averageRating += review.rating;
       }
     }
-    restaurant.rating = averageRating / restaurant.reviews.length;
+    restaurant.averageRating = averageRating / restaurant.reviews.length;
     restaurant.totalRatings++;
     await restaurant.save();
     res.status(201).json({ message: "Review created successfully", review });
