@@ -1,5 +1,5 @@
 const express = require("express");
-const { registerUser, loginUser, logoutUser, forgotPassword, resetPassword, getUserById } = require("../controllers/userController");
+const { registerUser, loginUser, logoutUser, forgotPassword, resetPassword, getUserById, getRestaurantById, deleteUserById, deleteRestaurantById } = require("../controllers/userController");
 const protect = require("../middleware/authMiddleware");
 
 const router = express.Router();
@@ -13,7 +13,10 @@ router.post("/reset-password/:token", resetPassword);
 router.get("/profile", protect, (req, res) => {
   res.json({ message: "This is a protected route", user: req.user });
 });
-// Move the :id route to the end to prevent it from catching other routes
-router.get('/:id', getUserById);
 
+router.get('/:id', getUserById);
+router.get('/restaurant/:id', getRestaurantById);
+
+router.delete('/:id', deleteUserById);
+router.delete('/restaurant/:id', deleteRestaurantById);
 module.exports = router;
