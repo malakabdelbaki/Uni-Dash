@@ -68,3 +68,72 @@ exports.createReview = async (req, res) => {
     res.status(500).json({ message: "Failed to create review", error });
   }
 }
+
+exports.getReviewsByRestaurant = async (req, res) => {
+  try {
+    const { restaurantId } = req.params;
+    const { page = 1, limit = 10 } = req.query;
+    const restaurant = await Restaurant.findById(restaurantId);
+    if (!restaurant) {
+      return res.status(404).json({ message: "Restaurant not found" });
+    }
+
+    const reviewIdList = restaurant.reviews.map((reviewId) => reviewId.toString());
+    console.log("Review ID List:", reviewIdList);
+    const reviews = await Review.find({ _id: { $in: reviewIdList } })
+      .populate("menuItem", "name")
+      .populate("user", "name")
+      .skip((page - 1) * limit)
+      .limit(parseInt(limit));
+    const totalReviews = await Review.countDocuments({ _id: { $in: reviewIdList } });
+      console.log("Reviews:", reviews);
+    if (!reviews.length) {
+      return res.status(404).json({ message: "No reviews found for this restaurant" });
+    }
+
+
+    res.status(200).json({
+      reviews,
+      totalReviews,
+      totalPages: Math.ceil(totalReviews / limit),
+      currentPage: parseInt(page),
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to retrieve reviews", error });
+  }
+};
+
+exports.getReviewsByRestaurantByProduct = async (req, res) => {
+  try {
+    const { restaurantId, menuItemId } = req.params;
+    const { page = 1, limit = 10 } = req.query;
+
+    const restaurant = await Restaurant.findById(restaurantId);
+    if (!restaurant) {
+      return res.status(404).json({ message: "Restaurant not found" });
+    }
+
+    const reviewIdList = restaurant.reviews.map((reviewId) => reviewId.toString());
+    const filteredReviewIdList = await Review.find({ _id: { $in: reviewIdList }, menuItem: menuItemId }).select("_id");
+    const filteredReviewIds = filteredReviewIdList.map((review) => review._id.toString());
+    const totalReviews = await Review.countDocuments({ _id: { $in: filteredReviewIds } });
+    const reviews = await Review.find({ _id: { $in: reviewIdList } })
+      .populate("menuItem", "name")
+      .populate("user", "name")
+      .skip((page - 1) * limit)
+      .limit(parseInt(limit));
+
+    if (!reviews.length) {
+      return res.status(404).json({ message: "No reviews found for this restaurant and menu item" });
+    }
+
+    res.status(200).json({
+      reviews,
+      totalReviews,
+      totalPages: Math.ceil(totalReviews / limit),
+      currentPage: parseInt(page),
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to retrieve reviews", error });
+  }
+};
