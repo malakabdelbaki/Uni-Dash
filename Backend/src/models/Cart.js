@@ -6,8 +6,9 @@ const cartSchema = new mongoose.Schema(
   {
     userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true }, 
     itemsIds: [{ type: mongoose.Schema.Types.ObjectId, ref: "CartItem" }],
+    totalPrice: { type: Number, default: 0 },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 cartSchema.index({ userId: 1 }); 
