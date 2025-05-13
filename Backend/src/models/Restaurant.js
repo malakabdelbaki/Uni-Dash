@@ -9,6 +9,7 @@ const restaurantSchema = new mongoose.Schema(
     description: { type: String },
     image: { type: String },
     isOpen: { type: Boolean, default: true },
+    reviews: { type: [mongoose.Schema.Types.ObjectId], ref: "Review" }    
   },
   { timestamps: true }
 );
