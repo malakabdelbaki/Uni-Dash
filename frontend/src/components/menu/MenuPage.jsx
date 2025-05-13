@@ -5,6 +5,8 @@ import RestaurantInfo from "./RestaurantInfo";
 import MenuList from "./MenuList";
 import { useMenu } from "../../hooks/useMenu";
 import "./menu.css";
+import ReviewsList from "./ReviewsList"
+
 
 const MenuPage = () => {
   const { restaurantId } = useParams();
@@ -37,8 +39,15 @@ const MenuPage = () => {
       <Header />
       <main className="menu-main">
         <RestaurantInfo restaurant={restaurant} />
-        <h2 className="menu-heading">Menu</h2>
-        <MenuList menu={menu} />
+        <div className="content-container">
+          <div className="menu-section">
+            <h2 className="menu-heading">Menu</h2>
+            <MenuList menu={menu} />
+          </div>
+          <div className="reviews-section">
+          <ReviewsList restaurantId={restaurantId || "1"} />          
+          </div>
+        </div>
       </main>
     </div>
   );

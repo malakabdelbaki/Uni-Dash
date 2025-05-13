@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const { getRestaurants, getMenuByRestaurant, createReview, getReviewsByRestaurant, getReviewsByRestaurantByProduct } = require("../controllers/restaurantController");
+const { getRestaurants, getMenuByRestaurant, createReview, getReviewsByRestaurant } = require("../controllers/restaurantController");
+const protect = require('../middleware/authMiddleware');
 
 // Route to fetch all restaurants
 router.get("/", getRestaurants);
@@ -8,10 +9,9 @@ router.get("/", getRestaurants);
 // Route to fetch menu items of a specific restaurant
 router.get("/:restaurantId/menu", getMenuByRestaurant);
 
-router.post("/:restaurantId/review", createReview);
+router.post("/:restaurantId/review", protect, createReview);
 
-router.get("/:restaurantId/review", getReviewsByRestaurant);
+router.get("/:restaurantId/reviews", getReviewsByRestaurant);
 
-router.get("/:restaurantId/review/:productId", getReviewsByRestaurantByProduct);
 
 module.exports = router;

@@ -11,6 +11,7 @@ const restaurantSchema = new mongoose.Schema(
     isOpen: { type: Boolean, default: true },
     reviews: { type: [mongoose.Schema.Types.ObjectId], ref: "Review" },    
     averageRating: { type: Number, default: 0 },
+    totalRatings: { type: Number, default: 0 },
   },
   { timestamps: true }
 );
