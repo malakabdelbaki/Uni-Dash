@@ -1,3 +1,4 @@
+import axiosInstance from "./axiosInstance";
 import axios from "axios";
 
 const API_URL = "http://localhost:5050/api";
@@ -33,3 +34,22 @@ export const fetchMenuByRestaurant = async (restaurantId) => {
     throw error;
   }
 };
+
+export const addReview = async (restaurantId, reviewData) => {
+  try {
+    const token = localStorage.getItem("token"); // Or get it from AuthContext
+    const response = await axiosInstance.post(
+      `${API_URL}/restaurants/${restaurantId}/review`, 
+      reviewData,
+       {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error adding review:", error);
+    throw error;
+  }
+}

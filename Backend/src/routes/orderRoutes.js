@@ -7,7 +7,8 @@ const {
   updateOrderStatus,
   getOrderCountdown,
   placeOrder,
-  getUserOrders
+  getUserOrders,
+  isReviewed,
 } = require("../controllers/orderController");
 
 const protect = require('../middleware/authMiddleware');
@@ -19,4 +20,5 @@ router.patch("/:orderId/status", updateOrderStatus);
 router.get("/countdown/:orderId", getOrderCountdown);
 router.post("/", protect, placeOrder);
 router.get('/user/:userId', getUserOrders);
+router.get('/review/:orderId', isReviewed);
 module.exports = router;

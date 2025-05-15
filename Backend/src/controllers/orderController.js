@@ -3,6 +3,7 @@ const OrderStatus = require("../enums/orderStatus");
 const Cart = require("../models/Cart");
 const CartItem = require("../models/CartItem");
 const MenuItem = require("../models/MenuItem");
+const Review = require("../models/Review");
 
 const createOrder = async (req, res) => {
   try {
@@ -146,13 +147,32 @@ const getUserOrders = async (req, res) => {
   }
 };
 
+const isReviewed = async (req, res) => {
+  try {
+    const { orderId } = req.params;
+
+    const review = await Review.findOne({ order: orderId });
+    console.log("Review found:", review); // Debugging log
+
+    if (review) {
+      return res.status(200).json({ reviewed: true });
+    } else {
+      return res.status(200).json({ reviewed: false });
+    }
+  } catch (error) {
+    console.error("Error checking review status:", error);
+    res.status(500).json({ message: "Failed to check review status", error });
+  }
+};
+
 module.exports = {
   createOrder,
   getIncomingOrders,
   updateOrderStatus,
   getOrderCountdown,
   placeOrder,
-  getUserOrders
+  getUserOrders,
+  isReviewed
 };
 
 

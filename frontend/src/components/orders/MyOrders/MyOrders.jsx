@@ -1,9 +1,15 @@
 import { useEffect, useState } from "react";
 import axiosInstance from "../../../api/axiosInstance";
 import { useAuth } from "../../../hooks/useAuth";
-import { fetchRestaurantById } from "../../../api/restaurantApi";
+import { addReview, fetchRestaurantById } from "../../../api/restaurantApi";
 import Header from "../../Header";
 import "./style.css";
+import ReviewModal from "./ReviewModal";
+import Toast from "./Toast";
+import { isOrderReviewed } from "../../../api/orderApi";
+
+
+
 
 const MyOrders = () => {
   const { user } = useAuth();
@@ -11,7 +17,10 @@ const MyOrders = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [restaurantNames, setRestaurantNames] = useState({});
-
+  const [showReviewModal, setShowReviewModal] = useState(false)
+  const [currentOrderId, setCurrentOrderId] = useState(null)
+  const [toast, setToast] = useState(null) // Changed to store both message and type
+  const [reviewStatus, setReviewStatus] = useState({});
 
 
   // Format date to a more readable format
@@ -52,6 +61,23 @@ const MyOrders = () => {
     }
     setRestaurantNames(prev => ({ ...prev, ...names }));
   };
+  
+  const checkIfOrdersReviewed = async (ordersToCheck = orders) => {
+  const statusMap = {};
+  console.log("Checking review status for orders:", ordersToCheck);
+  for (const order of ordersToCheck) {
+    try {
+      const response = await isOrderReviewed(order._id);
+      console.log("--------------------------"+response);
+      statusMap[order._id] = response.data.reviewed;
+      console.log(`Order ${order._id} reviewed status:`, statusMap[order._id]);
+    } catch (error) {
+      console.error(`Failed to check review status for order ${order._id}`, error);
+      statusMap[order._id] = false;
+    }
+  }
+  setReviewStatus(statusMap);
+};
 
   useEffect(() => {
     console.log("useEffect triggered in MyOrders, user:", user);
@@ -65,6 +91,8 @@ const MyOrders = () => {
           console.log("Orders response:", response.data);
           setOrders(response.data);
           await fetchRestaurantNames(response.data);
+          console.log("*******************Fetched restaurant names:", restaurantNames);
+          await checkIfOrdersReviewed(response.data);
           setError(null);
         } catch (error) {
           console.error("Error fetching orders:", error);
@@ -81,6 +109,49 @@ const MyOrders = () => {
       setLoading(false);
     }
   }, [user]);
+
+
+
+
+ const openReviewModal = (orderId) => {
+    setCurrentOrderId(orderId)
+    setShowReviewModal(true)
+  }
+
+  const closeReviewModal = () => {
+    setShowReviewModal(false)
+    setCurrentOrderId(null)
+  }
+
+  const handleSubmitReview = async (orderId, rating, reviewText) => {
+    try {
+      const order = orders.find((order) => order._id === orderId);
+      await addReview(order.restaurantId,{
+        order: orderId,
+        rating,
+        comment: reviewText,
+      })
+
+      // Update the order to mark it as reviewed
+      const updatedOrders = orders.map((order) => (order._id === orderId ? { ...order, reviewed: true } : order))
+      setOrders(updatedOrders)
+      setReviewStatus(prev => ({ ...prev, [orderId]: true }));
+
+      closeReviewModal()
+      setToast({ message: "Review submitted successfully!", type: "success" })
+    } catch (error) {
+      console.error("Error submitting review:", error)
+      setToast({ message: "Failed to submit review. Please try again.", type: "error" })
+    }
+  }
+  useEffect(() => {
+  console.log("Updated reviewStatus:", reviewStatus);
+}, [reviewStatus]);
+
+  
+  const clearToast = () => {
+    setToast(null)
+  }
 
   return (
     <div className="unidash-container">
@@ -102,6 +173,7 @@ const MyOrders = () => {
               <div className="header-cell">STATUS</div>
               <div className="header-cell">TIME LEFT</div>
               <div className="header-cell">TOTAL</div>
+              <div className="header-cell">REVIEW</div>
             </div>
 
             {orders.length > 0 ? (
@@ -120,6 +192,20 @@ const MyOrders = () => {
                     {order.estimatedPrepTime ? `${order.estimatedPrepTime} min` : "N/A"}
                   </div>
                   <div className="cell">${order.totalAmount?.toFixed(2) || "0.00"}</div>
+                   <div className="cell">
+                  {order.status === "Completed" && reviewStatus[order._id] === false ? (
+  <button className="leave-review-btn" onClick={() => openReviewModal(order._id)}>
+    Leave review
+  </button>
+) : reviewStatus[order._id] ? (
+  <span className="reviewed-label">Reviewed</span>
+) : (
+  <button className="leave-review-btn" disabled>
+    Leave review
+  </button>
+)}
+
+                  </div>
                 </div>
               ))
             ) : (
@@ -128,6 +214,12 @@ const MyOrders = () => {
           </div>
         )}
       </main>
+      <ReviewModal
+        isOpen={showReviewModal}
+        onClose={closeReviewModal}
+        onSubmit={handleSubmitReview}
+        orderId={currentOrderId}
+      />
       <div className="cart-button">
         <div className="cart-count">2</div>
         <div className="cart-icon">
@@ -148,7 +240,7 @@ const MyOrders = () => {
           </svg>
         </div>
       </div>
-    </div>
+  {toast && <Toast message={toast.message} type={toast.type} onClose={clearToast} />}    </div>
   );
 };
 
