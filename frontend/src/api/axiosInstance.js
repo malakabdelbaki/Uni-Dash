@@ -12,12 +12,7 @@ const axiosInstance = axios.create({
 
 // Request interceptor
 axiosInstance.interceptors.request.use((config) => {
-  const token = localStorage.getItem('token');
-  console.log('Axios request interceptor, token:', token ? 'Token exists' : 'No token');
-  
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
+  // No need to manually add token as it's handled by cookies
   return config;
 }, (error) => {
   console.error('Axios request interceptor error:', error);
@@ -27,17 +22,13 @@ axiosInstance.interceptors.request.use((config) => {
 // Response interceptor
 axiosInstance.interceptors.response.use(
   (response) => {
-    console.log('Axios response interceptor, status:', response.status);
     return response;
   },
   (error) => {
     console.error('Axios response interceptor error:', error.response?.status, error.response?.data);
     
     if (error.response?.status === 401) {
-      // Handle unauthorized (logout user, redirect, etc.)
-      console.log('Unauthorized access, clearing token');
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
+      // Handle unauthorized by redirecting to login
       window.location.href = '/login';
     }
     return Promise.reject(error);

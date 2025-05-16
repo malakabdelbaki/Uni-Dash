@@ -3,7 +3,7 @@ import axiosInstance from "../../../api/axiosInstance";
 import { useAuth } from "../../../hooks/useAuth";
 import { fetchRestaurantById } from "../../../api/restaurantApi";
 import Header from "../../Header";
-import "./style.css";
+import "../IncomingOrders/style.css";
 
 const MyOrders = () => {
   const { user } = useAuth();
