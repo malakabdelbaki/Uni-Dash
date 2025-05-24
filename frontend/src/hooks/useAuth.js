@@ -1,13 +1,16 @@
-import { createContext, useContext } from 'react';
+import { createContext, useContext, useState } from 'react';
 import axiosInstance from '../api/axiosInstance';
 
 const AuthContext = createContext(null);
 
 const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
+
   const login = async (userData) => {
     try {
       const response = await axiosInstance.get('/users/me');
       if (response.data) {
+        setUser(response.data);
         return response.data;
       }
     } catch (error) {
@@ -19,12 +22,14 @@ const AuthProvider = ({ children }) => {
   const logout = async () => {
     try {
       await axiosInstance.post('/users/logout');
+      setUser(null);
     } catch (error) {
       console.error('Logout error:', error);
     }
   };
 
   const value = {
+    user,
     login,
     logout
   };
