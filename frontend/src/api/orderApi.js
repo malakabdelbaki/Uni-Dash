@@ -107,11 +107,17 @@ export async function fetchUserOrders(userId) {
       const expectedCompletionTime = new Date(createdAt.getTime() + 30 * 60 * 1000);
       const timeDiffMs = expectedCompletionTime - now;
 
-      let timeLeft = "Completed";
-      if (timeDiffMs > 0) {
-        const minutes = Math.floor(timeDiffMs / (1000 * 60));
-        const seconds = Math.floor((timeDiffMs % (1000 * 60)) / 1000);
-        timeLeft = `${minutes}m ${seconds}s`;
+      try {
+        if (order.status === "CONFIRMED" || order.status === "PREPARING") {
+          const countdown = await getOrderCountdown(order._id);
+          timeLeft = `${countdown.remainingMinutes} min`;
+        } else if (order.status === "COMPLETED" || order.status === "DELIVERED") {
+          timeLeft = "Completed";
+        } else if (order.status === "CANCELLED") {
+          timeLeft = "Cancelled";
+        }
+      } catch (error) {
+        console.error(`Error getting countdown for order ${order._id}:`, error);
       }
 
       return {
