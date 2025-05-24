@@ -6,7 +6,7 @@ import Header from "../../Header";
 import "./style.css";
 import ReviewModal from "./ReviewModal";
 import Toast from "./Toast";
-import { isOrderReviewed } from "../../../api/orderApi";
+import { isOrderReviewed, fetchUserOrders } from "../../../api/orderApi";
 
 
 
@@ -82,22 +82,23 @@ const MyOrders = () => {
   useEffect(() => {
     console.log("useEffect triggered in MyOrders, user:", user);
     
-    if (user && user.id) {
+    if (user && user._id) {
       const fetchOrders = async () => {
         try {
           setLoading(true);
-          console.log("Fetching orders for user:", user.id);
-          const response = await axiosInstance.get(`/orders/user/${user.id}`);
-          console.log("Orders response:", response.data);
-          setOrders(response.data);
-          await fetchRestaurantNames(response.data);
-          console.log("*******************Fetched restaurant names:", restaurantNames);
-          await checkIfOrdersReviewed(response.data);
+          console.log("Fetching orders for user:", user._id);
+          const ordersData = await fetchUserOrders(user._id);
+          setOrders(ordersData);
+          await fetchRestaurantNames(ordersData);
+          await checkIfOrdersReviewed(ordersData);
           setError(null);
         } catch (error) {
           console.error("Error fetching orders:", error);
-          if(error.response.status !== 404 && error.response.data?.message !== "No orders found for this user.")
-          setError("Failed to fetch orders. Please try again later.");
+          if (error.response?.status === 404) {
+            setOrders([]);
+          } else {
+            setError("Failed to fetch orders. Please try again later.");
+          }
         } finally {
           setLoading(false);
         }
@@ -105,7 +106,7 @@ const MyOrders = () => {
 
       fetchOrders();
     } else {
-      console.log("No user found or user.id is missing, skipping fetch");
+      console.log("No user found or user._id is missing, skipping fetch");
       setLoading(false);
     }
   }, [user]);
@@ -179,7 +180,9 @@ const MyOrders = () => {
             {orders.length > 0 ? (
               orders.map((order) => (
                 <div key={order._id} className="table-row">
-                  <div className="cell" title={order._id}>{truncateText(order._id, 8)}</div>
+                  <div className="cell" title={order._id}>
+                    {order._id}
+                  </div>
                   <div className="cell" title={restaurantNames[order.restaurantId] || "Loading..."}>
                     {truncateText(restaurantNames[order.restaurantId] || "Loading...")}
                   </div>
