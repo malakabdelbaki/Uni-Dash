@@ -192,7 +192,9 @@ const MyOrders = () => {
       <div className={`cell status ${order.status?.toLowerCase() || 'pending'}`}>
         {order.status || "Pending"}
       </div>
-      <div className="cell">{order.timeLeft}</div>
+      <div className="cell">
+        {order.status === 'Confirmed' ? 'completed' : order.timeLeft}
+      </div>
       <div className="cell">${order.totalAmount?.toFixed(2) || "0.00"}</div>
       <div className="cell">
         {order.status === "Completed" && reviewStatus[order._id] === false ? (
