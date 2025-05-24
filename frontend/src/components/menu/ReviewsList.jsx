@@ -62,8 +62,8 @@ const ReviewItem = ({ review }) => {
 
         console.log("Liked response:", likedRes)
         console.log("Disliked response:", dislikedRes)
-        setIsLiked(likedRes.data.alreadyLiked)
-        setIsDisliked(dislikedRes.data.alreadyDisliked)
+        setIsLiked(likedRes.alreadyLiked)
+        setIsDisliked(dislikedRes.alreadyDisliked)
       } catch (err) {
         console.error("Error checking reaction status", err)
       }
@@ -148,7 +148,7 @@ const ReviewsList = ({ restaurantId }) => {
         <h2>Reviews</h2>
         <div className="overall-rating">
 <div className="rating-value">
-  {overallRating != null ? overallRating.toFixed(1) : "N/A"}
+  {overallRating != null ? overallRating.toFixed(1) : 0}
 </div>
           <div className="rating-stars">
             <StarRating rating={overallRating} />
@@ -158,11 +158,15 @@ const ReviewsList = ({ restaurantId }) => {
       </div>
 
       <div className="reviews-list">
-        {reviews.length > 0 ? (
-          reviews.map((review, index) => <ReviewItem key={review._id || index} review={review} />)
-        ) : !loading ? (
-          <div className="no-reviews">No reviews yet.</div>
-        ) : null}
+        {(() => {
+          if (reviews && reviews.length > 0) {
+            return reviews.map((review, index) => <ReviewItem key={review._id || index} review={review} />)
+          } else if (!loading) {
+            return <div className="no-reviews">No reviews yet.</div>
+          } else {
+            return null
+          }
+        })()}
 
         {loading && <div className="loading-reviews">Loading reviews...</div>}
 
