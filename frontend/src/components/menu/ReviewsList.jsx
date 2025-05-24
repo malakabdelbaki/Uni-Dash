@@ -62,8 +62,8 @@ const ReviewItem = ({ review }) => {
 
         console.log("Liked response:", likedRes)
         console.log("Disliked response:", dislikedRes)
-        setIsLiked(likedRes.data.alreadyLiked)
-        setIsDisliked(dislikedRes.data.alreadyDisliked)
+        setIsLiked(likedRes.alreadyLiked)
+        setIsDisliked(dislikedRes.alreadyDisliked)
       } catch (err) {
         console.error("Error checking reaction status", err)
       }
