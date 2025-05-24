@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { loginUser } from '../../api/authApi';
 import { useAuth } from '../../hooks/useAuth';
 import { Eye, EyeOff } from 'lucide-react';
 import * as S from './Login.styles';
+import axiosInstance from '../../api/axiosInstance';
 
 export const LoginForm = () => {
   const [email, setEmail] = useState('');
@@ -20,31 +20,29 @@ export const LoginForm = () => {
     setError('');
   
     try {
-      const response = await loginUser({ email, password });
-      console.log('Login response in form:', response);
-  
-      if (response.user) {
-        await login(response.user);
-        
-        if (response.user.role === 'restaurant_owner') {
-          // Use relative path instead of absolute URL
-          const restaurantsResponse = await fetch('/api/restaurants', {
-            credentials: 'include'
-          });
-
-          if (!restaurantsResponse.ok) {
-            throw new Error('Failed to fetch restaurants');
-          }
-          const restaurants = await restaurantsResponse.json();
-          
-          const myRestaurant = restaurants.find(
-            (restaurant) => restaurant.ownerId === response.user.id
-          );
-  
-          if (myRestaurant) {
-            navigate(`/restaurants/${myRestaurant._id}`);
-          } else {
-            setError('No restaurant found for this user');
+      const userData = await login({ email, password });
+      
+      if (userData) {
+        if (userData.role === 'restaurant_owner') {
+          try {
+            const restaurantsResponse = await axiosInstance.get('/restaurants');
+            const restaurants = restaurantsResponse.data;
+            
+            console.log('User ID:', userData._id);
+            console.log('Restaurants:', restaurants);
+            
+            const myRestaurant = restaurants.find(
+              (restaurant) => restaurant.ownerId === userData._id
+            );
+    
+            if (myRestaurant) {
+              navigate(`/restaurants/${myRestaurant._id}`);
+            } else {
+              setError('No restaurant found for this user');
+            }
+          } catch (error) {
+            console.error('Restaurant fetch error:', error);
+            setError('Error fetching restaurant details');
           }
         } else {
           navigate('/restaurants');
@@ -53,7 +51,7 @@ export const LoginForm = () => {
         setError('Invalid response from server');
       }
     } catch (err) {
-      console.error('Login error in form:', err);
+      console.error('Login error:', err);
       setError(err.message || 'Login failed. Please try again.');
     } finally {
       setIsLoading(false);
