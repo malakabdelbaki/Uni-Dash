@@ -7,7 +7,9 @@ const axiosInstance = axios.create({
   headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json'
-  }
+  },
+  // Add specific cookie handling
+  withXSRFToken: true
 });
 
 // Request interceptor
@@ -21,15 +23,13 @@ axiosInstance.interceptors.request.use((config) => {
 
 // Response interceptor
 axiosInstance.interceptors.response.use(
-  (response) => {
-    return response;
-  },
+  (response) => response,
   (error) => {
-    console.error('Axios response interceptor error:', error.response?.status, error.response?.data);
-    
     if (error.response?.status === 401) {
-      // Handle unauthorized by redirecting to login
-      window.location.href = '/login';
+      // Only redirect to login if not already on login page
+      if (!window.location.pathname.includes('/login')) {
+        window.location.href = '/login';
+      }
     }
     return Promise.reject(error);
   }

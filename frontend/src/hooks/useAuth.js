@@ -1,20 +1,48 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
 import axiosInstance from '../api/axiosInstance';
+import { loginUser } from '../api/authApi'; // Import the existing loginUser function
 
 const AuthContext = createContext(null);
 
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
 
-  const login = async (userData) => {
+  // Check for existing session on mount/refresh
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const response = await axiosInstance.get('/users/me');
+        if (response.data) {
+          setUser(response.data);
+        }
+      } catch (error) {
+        // Don't log error for auth check - it's normal when not logged in
+        setUser(null);
+      }
+    };
+    checkAuth();
+  }, []);
+
+  const login = async (credentials) => {
     try {
-      const response = await axiosInstance.get('/users/me');
-      if (response.data) {
-        setUser(response.data);
-        return response.data;
+      // Use the existing loginUser function from authApi
+      const loginResponse = await loginUser(credentials);
+      
+      if (loginResponse) {
+        // Get fresh user data after login
+        const userResponse = await axiosInstance.get('/users/me');
+        if (userResponse.data) {
+          setUser(userResponse.data);
+          return userResponse.data;
+        }
       }
     } catch (error) {
-      console.error('Login error:', error);
+      console.error('Login error details:', {
+        status: error.response?.status,
+        data: error.response?.data,
+        message: error.message
+      });
+      setUser(null);
       throw error;
     }
   };
@@ -22,16 +50,19 @@ const AuthProvider = ({ children }) => {
   const logout = async () => {
     try {
       await axiosInstance.post('/users/logout');
-      setUser(null);
     } catch (error) {
       console.error('Logout error:', error);
+    } finally {
+      // Always clear user state on logout attempt
+      setUser(null);
     }
   };
 
   const value = {
     user,
     login,
-    logout
+    logout,
+    isAuthenticated: !!user
   };
 
   return (
