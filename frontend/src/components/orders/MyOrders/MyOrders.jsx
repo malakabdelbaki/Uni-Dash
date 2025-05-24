@@ -196,7 +196,7 @@ const MyOrders = () => {
                   </div>
                   <div className="cell">${order.totalAmount?.toFixed(2) || "0.00"}</div>
                    <div className="cell">
-                  {order.status === "Completed" && reviewStatus[order._id] === false ? (
+                  {order.status === "Confirmed" && reviewStatus[order._id] === false ? (
   <button className="leave-review-btn" onClick={() => openReviewModal(order._id)}>
     Leave review
   </button>
