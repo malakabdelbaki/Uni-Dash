@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import { createGlobalStyle } from 'styled-components';
+import { Link as RouterLink } from 'react-router-dom';
 
 export const GlobalStyle = createGlobalStyle`
   /* Modern CSS Reset */
@@ -86,20 +87,31 @@ export const GlobalStyle = createGlobalStyle`
 export const Container = styled.div`
   display: flex;
   min-height: 100vh;
+  width: 100%;
+  background: #fff;
 `;
 
 export const FormSection = styled.div`
-  flex: 1;
-  max-width: 450px;
-  padding: 2rem;
+  flex: 0 0 50%; // Changed from 65% to 50%
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 4rem;
   background: #fff;
-  margin: 0 auto;
+
+  @media (max-width: 1024px) {
+    flex: 0 0 100%;
+    padding: 2rem;
+  }
 `;
 
 export const LogoContainer = styled.div`
   display: flex;
   justify-content: center;
   margin-bottom: 2rem;
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto 2rem;
 `;
 
 export const LogoUni = styled.span`
@@ -130,33 +142,41 @@ export const Subtitle = styled.p`
 `;
 
 export const Form = styled.form`
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1rem; // Reduced from 1.5rem
+  padding: 0 1rem;
 `;
 
 export const InputGroup = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+  width: 100%;
+  margin-bottom: 0.75rem; // Reduced from 1.5rem
 `;
 
 export const Label = styled.label`
+  display: block;
   font-size: 0.875rem;
   color: #545563;
   font-weight: 600;
+  margin-bottom: 0.25rem; // Reduced from 0.5rem
 `;
 
 export const Input = styled.input`
-  padding: 0.75rem 1rem;
+  width: 100%;
+  padding: 0.875rem 1rem;
   border: 1px solid #c7c8d2;
   border-radius: 8px;
   font-size: 1rem;
   transition: border-color 0.3s;
+  margin-top: 0.25rem;
 
   &:focus {
     outline: none;
     border-color: #d79a27;
+    box-shadow: 0 0 0 2px rgba(215, 154, 39, 0.1);
   }
 `;
 
@@ -174,15 +194,17 @@ export const EyeIconWrapper = styled.div`
 `;
 
 export const SubmitButton = styled.button`
+  width: 100%;
   background: #d79a27;
   color: white;
-  padding: 0.75rem;
+  padding: 1rem;
   border: none;
   border-radius: 8px;
   font-size: 1rem;
   font-weight: 700;
   cursor: pointer;
   transition: background 0.3s;
+  margin-top: 1rem;
 
   &:hover {
     background: #c68a1f;
@@ -203,7 +225,7 @@ export const FooterLinks = styled.div`
   margin-top: 1.5rem;
 `;
 
-export const Link = styled.a`
+export const StyledLink = styled(RouterLink)`
   color: #d6212a;
   text-decoration: none;
   font-weight: 700;
@@ -228,15 +250,15 @@ export const ErrorMessage = styled.p`
 `;
 
 export const InfoSection = styled.div`
-  display: none; // Hidden by default, can be enabled if needed
+  display: none;
 
   @media (min-width: 1024px) {
+    flex: 0 0 50%; // Changed from 35% to 50%
     display: flex;
-    flex: 1;
-    background: #d79a27;
+    background: url('/home.png') no-repeat center center;
+    background-size: cover;
     flex-direction: column;
     justify-content: center;
-    padding: 2rem;
     color: white;
   }
 `;
@@ -251,3 +273,37 @@ export const InfoDescription = styled.p`
   font-size: 1rem;
   line-height: 1.5;
 `;
+
+export const PasswordContainer = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
+`;
+
+export const PasswordToggle = styled.button`
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #545563;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    color: #231f20;
+  }
+`;
+
+export const LinksContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
+`;
+

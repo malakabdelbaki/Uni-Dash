@@ -12,7 +12,7 @@ export const SignupForm = () => {
     password: '',
     confirmPassword: '',
     phone: '',
-    role: 'student'
+    role: 'student' // This will be fixed as 'student'
   });
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -49,9 +49,13 @@ export const SignupForm = () => {
     setError('');
 
     try {
-      const { token, user } = await registerUser(formData);
-      login({ token, ...user });
-      navigate('/restaurants');
+      const response = await registerUser(formData);
+      if (response.user) {
+        await login(response.user);
+        navigate('/restaurants');
+      } else {
+        setError('Invalid response from server');
+      }
     } catch (err) {
       setError(err.message || 'Registration failed');
     } finally {
@@ -109,44 +113,6 @@ export const SignupForm = () => {
                 placeholder="+20"
                 required
               />
-            </S.InputGroup>
-
-            <S.InputGroup span>
-              <S.Label>Account Type</S.Label>
-              <S.RadioGroup>
-                <S.RadioLabel>
-                  <S.RadioInput
-                    type="radio"
-                    name="role"
-                    value="student"
-                    checked={formData.role === 'student'}
-                    onChange={handleChange}
-                  />
-                  Student
-                </S.RadioLabel>
-
-                <S.RadioLabel>
-                  <S.RadioInput
-                    type="radio"
-                    name="role"
-                    value="staff"
-                    checked={formData.role === 'staff'}
-                    onChange={handleChange}
-                  />
-                  Staff
-                </S.RadioLabel>
-
-                <S.RadioLabel>
-                  <S.RadioInput
-                    type="radio"
-                    name="role"
-                    value="restaurant_owner"
-                    checked={formData.role === 'restaurant_owner'}
-                    onChange={handleChange}
-                  />
-                  Restaurant Owner
-                </S.RadioLabel>
-              </S.RadioGroup>
             </S.InputGroup>
 
             <S.InputGroup>

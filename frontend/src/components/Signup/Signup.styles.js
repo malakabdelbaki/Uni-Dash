@@ -163,7 +163,9 @@ export const Label = styled.label`
 `;
 
 export const Input = styled.input`
+  width: 100%;
   padding: 0.75rem 1rem;
+  padding-right: 2.5rem; // Add space for the eye icon
   border: 1px solid #c7c8d2;
   border-radius: 8px;
   font-size: 1rem;
@@ -177,15 +179,24 @@ export const Input = styled.input`
 
 export const PasswordWrapper = styled.div`
   position: relative;
+  width: 100%;
 `;
 
 export const EyeIconWrapper = styled.div`
   position: absolute;
-  right: 1rem;
+  right: 0.75rem; // Reduced from 1rem
   top: 50%;
   transform: translateY(-50%);
   cursor: pointer;
   color: #545563;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem;
+  
+  &:hover {
+    color: #d79a27;
+  }
 `;
 
 export const RadioGroup = styled.div`

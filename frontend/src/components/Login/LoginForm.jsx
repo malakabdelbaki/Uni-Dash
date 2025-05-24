@@ -13,6 +13,7 @@ export const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
@@ -22,24 +23,20 @@ export const LoginForm = () => {
       const response = await loginUser({ email, password });
       console.log('Login response in form:', response);
   
-      if (response.token && response.user) {
-        login({ token: response.token, ...response.user });
-  //console.log(response.user.role)
+      if (response.user) {
+        await login(response.user);
+        
         if (response.user.role === 'restaurant_owner') {
-          // Fetch all restaurants
-          const restaurantsResponse = await fetch('http://localhost:5050/api/restaurants', {
-            headers: {
-              Authorization: `Bearer ${response.token}`,
-            },
+          // Use relative path instead of absolute URL
+          const restaurantsResponse = await fetch('/api/restaurants', {
+            credentials: 'include'
           });
 
           if (!restaurantsResponse.ok) {
             throw new Error('Failed to fetch restaurants');
           }
           const restaurants = await restaurantsResponse.json();
-          // Find the restaurant where ownerId matches logged-in user ID
-          // console.log("1 " +restaurant.ownerId)
-          //console.log("2 " +JSON.stringify(response.user))
+          
           const myRestaurant = restaurants.find(
             (restaurant) => restaurant.ownerId === response.user.id
           );
@@ -69,7 +66,7 @@ export const LoginForm = () => {
 
   return (
     <S.Container>
-       <S.GlobalStyle />
+      <S.GlobalStyle />
       <S.FormSection>
         <S.LogoContainer>
           <S.LogoUni>Uni</S.LogoUni>
@@ -95,40 +92,37 @@ export const LoginForm = () => {
 
           <S.InputGroup>
             <S.Label>Password</S.Label>
-            <S.PasswordWrapper>
+            <S.PasswordContainer>
               <S.Input
-                type={showPassword ? 'text' : 'password'}
+                type={showPassword ? "text" : "password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="min. 8 characters"
-                minLength="8"
+                placeholder="Enter your password"
                 required
               />
-              <S.EyeIconWrapper onClick={togglePasswordVisibility}>
-                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-              </S.EyeIconWrapper>
-            </S.PasswordWrapper>
+              <S.PasswordToggle onClick={togglePasswordVisibility}>
+                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+              </S.PasswordToggle>
+            </S.PasswordContainer>
           </S.InputGroup>
 
           <S.SubmitButton type="submit" disabled={isLoading}>
-            {isLoading ? 'Logging in...' : 'Login'}
+            {isLoading ? "Logging in..." : "Login"}
           </S.SubmitButton>
-        </S.Form>
 
-        <S.FooterLinks>
-          <S.Link href="/forgot-password">Forgot password?</S.Link>
-          <S.SignUpText>
-            Don't have an account? <S.Link href="/signup">Sign up</S.Link>
-          </S.SignUpText>
-        </S.FooterLinks>
+          <S.LinksContainer>
+            <S.StyledLink to="/forgot-password">Forgot Password?</S.StyledLink>
+            <S.StyledLink to="/signup">Don't have an account? Sign up</S.StyledLink>
+          </S.LinksContainer>
+        </S.Form>
       </S.FormSection>
 
       <S.InfoSection>
-        <S.InfoTitle>University Restaurant Online Ordering</S.InfoTitle>
-        <S.InfoDescription>
+        {/* <S.InfoTitle>University Restaurant Online Ordering</S.InfoTitle>
+        {/* <S.InfoDescription>
           UniDash is an innovative online ordering system designed to enhance the food ordering experience for
           university students and staff. By enabling users to pre-order meals from university restaurants.
-        </S.InfoDescription>
+        </S.InfoDescription> */} 
       </S.InfoSection>
     </S.Container>
   );

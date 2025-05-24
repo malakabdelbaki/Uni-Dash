@@ -1,19 +1,21 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import LoginPage from './pages/Login';
 import SignupPage from './pages/Signup';
-import AuthProvider from './hooks/useAuth';
 import OrdersPage from './pages/ViewOrders';
 import Restaurant from './pages/restraunt';
 import Menu from './pages/menu';
 import MyOrders from './pages/myOrders';
 import ForgotPassword from './pages/forgot-password';
 import Cart from './pages/Cart';
+import StudentProfilePage from './pages/student-profile';
+import RestaurantProfilePage from './pages/restaurant-profile';
+import AuthProvider from './hooks/useAuth';
 
 function App() {
   return (
-    <AuthProvider>
-      <Router>
+    <BrowserRouter>
+      <AuthProvider>
         <Routes>
           <Route path="/" element={<LoginPage />} />
           <Route path="/login" element={<LoginPage />} />
@@ -26,9 +28,11 @@ function App() {
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/forgot-password/:token" element={<ForgotPassword />} />
           <Route path="/cart" element={<Cart />} />
+          <Route path="/profile/student" element={<StudentProfilePage />} />
+          <Route path="/profile/restaurant" element={<RestaurantProfilePage />} />
         </Routes>
-      </Router>
-    </AuthProvider>
+      </AuthProvider>
+    </BrowserRouter>
   );
 }
 
