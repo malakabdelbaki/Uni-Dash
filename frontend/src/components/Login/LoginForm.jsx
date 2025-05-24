@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { Eye, EyeOff } from 'lucide-react';
 import * as S from './Login.styles';
+import axiosInstance from '../../api/axiosInstance';
 
 export const LoginForm = () => {
   const [email, setEmail] = useState('');
@@ -19,23 +20,19 @@ export const LoginForm = () => {
     setError('');
   
     try {
-      // Use login directly from useAuth
       const userData = await login({ email, password });
       
       if (userData) {
         if (userData.role === 'restaurant_owner') {
           try {
-            const restaurantsResponse = await fetch('/api/restaurants', {
-              credentials: 'include'
-            });
-
-            if (!restaurantsResponse.ok) {
-              throw new Error('Failed to fetch restaurants');
-            }
-            const restaurants = await restaurantsResponse.json();
+            const restaurantsResponse = await axiosInstance.get('/restaurants');
+            const restaurants = restaurantsResponse.data;
+            
+            console.log('User ID:', userData._id);
+            console.log('Restaurants:', restaurants);
             
             const myRestaurant = restaurants.find(
-              (restaurant) => restaurant.ownerId === userData.id
+              (restaurant) => restaurant.ownerId === userData._id
             );
     
             if (myRestaurant) {
@@ -44,6 +41,7 @@ export const LoginForm = () => {
               setError('No restaurant found for this user');
             }
           } catch (error) {
+            console.error('Restaurant fetch error:', error);
             setError('Error fetching restaurant details');
           }
         } else {
