@@ -8,6 +8,7 @@ export const OrderStatus = Object.freeze({
   DELIVERED: "Delivered",
   CANCELLED: "Cancelled",
 });
+const API_URL = "http://localhost:5050/api";
 
 export async function fetchOrders(restaurantId) {
   try {
@@ -81,5 +82,17 @@ export async function updateOrderStatus(orderId, newStatus) {
   } catch (err) {
     console.error("Error updating order status:", err);
     throw err;
+  }
+}
+
+export const isOrderReviewed = async (orderId) => {
+  try {
+    const response = await axiosInstance.get(
+      `${API_URL}/orders/review/${orderId}`);
+      console.log("isOrderReviewed response:", response.data);
+    return response;
+  } catch (error) {
+    console.error("Error checking if order is reviewed:", error);
+    throw error;
   }
 }

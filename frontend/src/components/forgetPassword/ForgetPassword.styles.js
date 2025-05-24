@@ -110,10 +110,14 @@ export const styles = {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    padding: "2rem",
-    backgroundColor: "#d79a27",
-    color: "#ffffff",
+    background: "url('/home.png') no-repeat center center",
+    backgroundSize: "cover",
+    minHeight: "100vh",
+    "@media (max-width: 1024px)": {
+      display: "none"
+    }
   },
+
   rightContent: {
     maxWidth: "500px",
   },
@@ -137,4 +141,4 @@ export const styles = {
     alignSelf: "flex-end",
   },
   
-}; 
+};

@@ -215,16 +215,8 @@ export default function ForgetPasswordForm({ token }) {
           </div>
         </div>
       </div>
-
       <div style={styles.rightPanel}>
-        <div style={styles.rightContent}>
-          <h2>University Restaurant Online Ordering</h2>
-          <p>
-            UniDash is an innovative online ordering system designed to enhance the food ordering experience for
-            university students and staff. By enabling users to pre-order meals from university restaurants
-          </p>
-        </div>
-      </div>
+       </div>
     </div>
   )
 }

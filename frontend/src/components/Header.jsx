@@ -111,7 +111,7 @@ export default function Header() {
     }
     
     if (user.role === "restaurant_owner") {
-      navigate("/profile/restaurant")
+      navigate("/profile/restaurant/%{user.id}")
     } else {
       navigate("/profile/student")
     }

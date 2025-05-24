@@ -29,7 +29,10 @@ function App() {
           <Route path="/forgot-password/:token" element={<ForgotPassword />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/profile/student" element={<StudentProfilePage />} />
-          <Route path="/profile/restaurant" element={<RestaurantProfilePage />} />
+          <Route 
+            path="/profile/restaurant" 
+            element={<RestaurantProfilePage />} 
+          />
         </Routes>
       </Router>
     </AuthProvider>

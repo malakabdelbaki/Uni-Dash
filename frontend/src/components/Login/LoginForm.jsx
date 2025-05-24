@@ -27,8 +27,8 @@ export const LoginForm = () => {
         await login(response.user);
         
         if (response.user.role === 'restaurant_owner') {
-          // Fetch all restaurants
-          const restaurantsResponse = await fetch('http://localhost:5050/api/restaurants', {
+          // Use relative path instead of absolute URL
+          const restaurantsResponse = await fetch('/api/restaurants', {
             credentials: 'include'
           });
 
@@ -111,18 +111,18 @@ export const LoginForm = () => {
           </S.SubmitButton>
 
           <S.LinksContainer>
-            <S.Link to="/forgot-password">Forgot Password?</S.Link>
-            <S.Link to="/signup">Don't have an account? Sign up</S.Link>
+            <S.StyledLink to="/forgot-password">Forgot Password?</S.StyledLink>
+            <S.StyledLink to="/signup">Don't have an account? Sign up</S.StyledLink>
           </S.LinksContainer>
         </S.Form>
       </S.FormSection>
 
       <S.InfoSection>
-        <S.InfoTitle>University Restaurant Online Ordering</S.InfoTitle>
-        <S.InfoDescription>
+        {/* <S.InfoTitle>University Restaurant Online Ordering</S.InfoTitle>
+        {/* <S.InfoDescription>
           UniDash is an innovative online ordering system designed to enhance the food ordering experience for
           university students and staff. By enabling users to pre-order meals from university restaurants.
-        </S.InfoDescription>
+        </S.InfoDescription> */} 
       </S.InfoSection>
     </S.Container>
   );

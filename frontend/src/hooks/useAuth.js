@@ -32,6 +32,11 @@ const AuthProvider = ({ children }) => {
     try {
       // The token will be automatically handled by the browser as a cookie
       setUser(userData);
+      // Fetch fresh user data after login
+      const response = await axiosInstance.get('/users/me');
+      if (response.data) {
+        setUser(response.data);
+      }
     } catch (error) {
       console.error('Login error:', error);
       throw error;

@@ -12,10 +12,9 @@ exports.getStudentProfile = async (req, res) => {
 
     const profileData = {
       name: user.name,
-      username: user.username,
       email: user.email,
       phone: user.phone,
-      accountType: user.accountType
+      accountType: user.role
     };
 
     res.json(profileData);

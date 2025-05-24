@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getRestaurantProfile } from '../api/restaurantProfile';
+import { getRestaurantProfile } from '../api/studentProfile';
 
 export const useRestaurantProfile = () => {
   const [data, setData] = useState({});

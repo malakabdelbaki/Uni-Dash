@@ -1,14 +1,16 @@
-import React from "react";
-import { useStudentProfile } from "../../hooks/useStudentProfile";
-import ProfileField from "./ProfileField";
-import ActionButtons from "./ActionButtons";
+import React from 'react';
+import { useAuth } from '../../hooks/useAuth';
+import ProfileField from './ProfileField';
+import { FaUser, FaEnvelope, FaPhone, FaUserTag } from 'react-icons/fa';
 import './Profile.css';
 import Header from "../Header";
-function StudentProfile() {
-  const { data, loading, error } = useStudentProfile();
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
+const StudentProfile = () => {
+  const { user } = useAuth();
+
+  if (!user) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="profile-container">
@@ -22,24 +24,41 @@ function StudentProfile() {
             </svg>
           </div>
         </div>
-        <h1 className="welcome-text">Welcome, {data.name}</h1>
+        <h1 className="welcome-text">Welcome, {user.name}</h1>
       </div>
 
       <div className="profile-content">
         <div className="profile-fields">
           <div className="field-row">
-            <ProfileField label="Username" value={data.username} icon="user" />
-            <ProfileField label="Email Address" value={data.email} icon="email" />
+            <ProfileField
+              icon={<FaUser className="text-blue-500" />}
+              label="Name"
+              value={user.name}
+            />
+            <ProfileField
+              icon={<FaEnvelope className="text-blue-500" />}
+              label="Email"
+              value={user.email}
+            />
           </div>
           <div className="field-row">
-            <ProfileField label="Phone Number" value={data.phone} icon="phone" />
-            <ProfileField label="Account Type" value={data.accountType} icon="account" />
+            <ProfileField
+              icon={<FaPhone className="text-blue-500" />}
+              label="Phone"
+              value={user.phone || 'Not provided'}
+            />
+          </div>
+          <div className="field-row">
+            <ProfileField
+              icon={<FaUserTag className="text-blue-500" />}
+              label="Account Type"
+              value={user.role}
+            />
           </div>
         </div>
-        <ActionButtons />
       </div>
     </div>
   );
-}
+};
 
 export default StudentProfile; 
