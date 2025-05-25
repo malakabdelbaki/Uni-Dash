@@ -8,7 +8,6 @@ export const OrderStatus = Object.freeze({
   DELIVERED: "Delivered",
   CANCELLED: "Cancelled",
 });
-const API_URL = "http://localhost:5050/api";
 
 export async function fetchOrders(restaurantId) {
   try {

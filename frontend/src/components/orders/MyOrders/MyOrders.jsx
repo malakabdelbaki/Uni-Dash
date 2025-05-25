@@ -154,6 +154,7 @@ const MyOrders = () => {
     setToast(null)
   }
 
+
   return (
     <div className="unidash-container">
       <Header />
@@ -178,42 +179,44 @@ const MyOrders = () => {
             </div>
 
             {orders.length > 0 ? (
-              orders.map((order) => (
-                <div key={order._id} className="table-row">
-                  <div className="cell" title={order._id}>
-                    {order._id}
-                  </div>
-                  <div className="cell" title={restaurantNames[order.restaurantId] || "Loading..."}>
-                    {truncateText(restaurantNames[order.restaurantId] || "Loading...")}
-                  </div>
-                  <div className="cell">{formatDate(order.createdAt)}</div>
-                  <div className="cell">{formatTime(order.createdAt)}</div>
-                  <div className={`cell status ${order.status?.toLowerCase() || 'pending'}`}>
-                    {order.status || "Pending"}
-                  </div>
-                  <div className="cell">
-                    {order.estimatedPrepTime ? `${order.estimatedPrepTime} min` : "N/A"}
-                  </div>
-                  <div className="cell">${order.totalAmount?.toFixed(2) || "0.00"}</div>
-                   <div className="cell">
-                  {order.status === "Confirmed" && reviewStatus[order._id] === false ? (
-  <button className="leave-review-btn" onClick={() => openReviewModal(order._id)}>
-    Leave review
-  </button>
-) : reviewStatus[order._id] ? (
-  <span className="reviewed-label">Reviewed</span>
+
+  orders.map((order) => (
+    <div key={order._id} className="table-row">
+      <div className="cell" title={order._id}>
+        {order._id}
+      </div>
+      <div className="cell" title={restaurantNames[order.restaurantId] || "Loading..."}>
+        {truncateText(restaurantNames[order.restaurantId] || "Loading...")}
+      </div>
+      <div className="cell">{formatDate(order.createdAt)}</div>
+      <div className="cell">{formatTime(order.createdAt)}</div>
+      <div className={`cell status ${order.status?.toLowerCase() || 'pending'}`}>
+        {order.status || "Pending"}
+      </div>
+      <div className="cell">
+        {order.status === 'Confirmed' ? 'completed' : order.timeLeft}
+      </div>
+      <div className="cell">${order.totalAmount?.toFixed(2) || "0.00"}</div>
+      <div className="cell">
+        {order.status === "Completed" && reviewStatus[order._id] === false ? (
+          <button className="leave-review-btn" onClick={() => openReviewModal(order._id)}>
+            Leave review
+          </button>
+        ) : reviewStatus[order._id] ? (
+          <span className="reviewed-label">Reviewed</span>
+        ) : (
+          <button className="leave-review-btn" disabled>
+            Leave review
+          </button>
+        )}
+      </div>
+    </div>
+  ))
+
 ) : (
-  <button className="leave-review-btn" disabled>
-    Leave review
-  </button>
+  <div className="no-orders">No orders available.</div>
 )}
 
-                  </div>
-                </div>
-              ))
-            ) : (
-              <div className="no-orders">No orders available.</div>
-            )}
           </div>
         )}
       </main>

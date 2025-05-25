@@ -51,7 +51,7 @@ export const SignupForm = () => {
     try {
       const response = await registerUser(formData);
       if (response.user) {
-        await login(response.user);
+        await login({ email: formData.email, password: formData.password }); 
         navigate('/restaurants');
       } else {
         setError('Invalid response from server');
