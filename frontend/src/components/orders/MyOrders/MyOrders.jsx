@@ -179,6 +179,7 @@ const MyOrders = () => {
             </div>
 
             {orders.length > 0 ? (
+
   orders.map((order) => (
     <div key={order._id} className="table-row">
       <div className="cell" title={order._id}>
@@ -211,6 +212,7 @@ const MyOrders = () => {
       </div>
     </div>
   ))
+
 ) : (
   <div className="no-orders">No orders available.</div>
 )}

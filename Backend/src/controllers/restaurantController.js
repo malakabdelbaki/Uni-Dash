@@ -101,7 +101,7 @@ exports.getReviewsByRestaurant = async (req, res) => {
     const totalReviews = await Review.countDocuments({ _id: { $in: reviewIdList } });
       console.log("Reviews:", reviews);
     if (!reviews.length) {
-      return res.status(404).json({ message: "No reviews found for this restaurant" });
+      return res.status(200).json({ message: "No reviews found for this restaurant" });
     }
     const averageRating = restaurant.averageRating;
     const totalRatings = restaurant.totalRatings;
